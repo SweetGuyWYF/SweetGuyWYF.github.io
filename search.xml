@@ -4,6 +4,19 @@
   
     
     <entry>
+      <title>Vulnhub靶机随笔-HackableII</title>
+      <link href="/2024/05/17/Vulnhub%E9%9D%B6%E6%9C%BAHackable%20II%E8%AF%A6%E8%A7%A3/"/>
+      <url>/2024/05/17/Vulnhub%E9%9D%B6%E6%9C%BAHackable%20II%E8%AF%A6%E8%A7%A3/</url>
+      
+        <content type="html"><![CDATA[<h1 id="Vulnhub靶机Hackable-II详解"><a href="#Vulnhub靶机Hackable-II详解" class="headerlink" title="Vulnhub靶机Hackable II详解"></a>Vulnhub靶机Hackable II详解</h1><p>攻击机Kali  IP:192.168.1.6</p><p>靶机    IP:未知  系统:未知</p><p>A.信息收集</p><p>扫描靶机存活性 确定IP地址</p><p>1.命令:arp-scan -l</p><p><img src="/../Vulnhub/HackableII/clip_image002.jpg" alt="img"></p><p>扫描靶机开放端口及其服务版本信息</p><p>2.命令:nmap -A -p- -sV 靶机IP</p><p><img src="/../Vulnhub/HackableII/clip_image004.jpg" alt="img"></p><p>3.靶机开放三个端口:</p><p>a)    21ftp端口:存在anonymous匿名用户登录漏洞</p><p>b)    22ssh端口</p><p>c)    80web端口</p><p>4.登录ftp服务器,同时进行web的子目录爆破,使用暴力工具gobuster</p><p><strong>命令: gobuster dir -u http:&#x2F;&#x2F;靶机IP -w &#x2F;usr&#x2F;share&#x2F;wordlists&#x2F;dirbuster&#x2F;directory-list-2.3-medium.txt -x .php,.txt,.html,.zip</strong></p><p>ftp服务器上存在一个CALL.html文件</p><p><img src="/../Vulnhub/HackableII/clip_image006.jpg" alt="img"></p><p><img src="/../Vulnhub/HackableII/clip_image008.jpg" alt="img"></p><p>这个html文件是让我们准备接听电话,我首先猜测可能是靶机一直在向我们发送流量,我们需要将其获取</p><p>…… 是我想多了 没用的文件</p><p><img src="/../Vulnhub/HackableII/clip_image010.jpg" alt="img"></p><p>我们再回到web上,正好也爆破完了,瞅一眼发现存在一个files的子目录</p><p><img src="/../Vulnhub/HackableII/clip_image012.jpg" alt="img"></p><p>访问一下,很明显ftp服务器的主目录</p><p><img src="/../Vulnhub/HackableII/clip_image014.jpg" alt="img"></p><p>B. FTP上传漏洞</p><p>手里有ftp匿名登录漏洞,又有ftp的主目录,如果再有上传漏洞……</p><p>1.咱们定位到php反弹shell文件的位置,复制一份,然后修改ip和port两个参数</p><p><img src="/../Vulnhub/HackableII/clip_image016.jpg" alt="img"></p><p><img src="/../Vulnhub/HackableII/clip_image018.jpg" alt="img"></p><p>2.通过ftp将其上传</p><p><img src="/../Vulnhub/HackableII/clip_image020.jpg" alt="img"></p><p>3.通过nc建立反弹shell</p><p>Kali开启监听 命令:nc -lvvp 4444</p><p>通过网页点击上传的文件即可</p><p><img src="/../Vulnhub/HackableII/clip_image022.jpg" alt="img"></p><p>C.提权 </p><p>1.在&#x2F;home文件夹发现有一个importrant.txt,里面提示运行家目录的&#x2F;.runme.sh</p><p>shrek家目录中的user.txt没权限查看</p><p><img src="/../Vulnhub/HackableII/clip_image024.jpg" alt="img"></p><p>2.那就运行一下吧,得到经过加密的用户shrek的密码</p><p><img src="/../Vulnhub/HackableII/clip_image026.jpg" alt="img"></p><p>3.解密得到密码为onion</p><p><img src="/../Vulnhub/HackableII/clip_image028.jpg" alt="img"></p><p>4.通过ssh登录用户shrek,得到第一个flag</p><p><img src="/../Vulnhub/HackableII/clip_image030.jpg" alt="img"></p><p><img src="/../Vulnhub/HackableII/clip_image032.jpg" alt="img"></p><p>5.是时候提权了,尝试sudo -l提权姿势时,发现存在一个委派权限python3.5</p><p><img src="/../Vulnhub/HackableII/clip_image034.jpg" alt="img"></p><p>6.再次拿出我们的神器<a href="https://gtfobins.github.io/">GTFOBins</a></p><p>搜索python,得到了提权方法</p><p><img src="/../Vulnhub/HackableII/clip_image036.jpg" alt="img"></p><p>7.提权成功,获取第二个flag</p><p><img src="/../Vulnhub/HackableII/clip_image038.jpg" alt="img"></p><p><img src="/../Vulnhub/HackableII/clip_image040.jpg" alt="img"></p><p>胸有凌云志</p><p>无高不可攀</p><p>好了,到这我们的文章真的结束了,有不懂的可以私信我</p><p>你们的点赞和关注是我更新的动力,让我们一起努力~~</p>]]></content>
+      
+      
+      
+    </entry>
+    
+    
+    
+    <entry>
       <title>Vulnhub靶机随笔-BOREDHACKERBLOG:CLOUD AV</title>
       <link href="/2024/05/13/Vulnhub%E9%9D%B6%E6%9C%BABOREDHACKERBLOG_CLOUD_AV%E8%AF%A6%E8%A7%A3/"/>
       <url>/2024/05/13/Vulnhub%E9%9D%B6%E6%9C%BABOREDHACKERBLOG_CLOUD_AV%E8%AF%A6%E8%A7%A3/</url>
